@@ -1,0 +1,14 @@
+metadata:
+  name: "ninja"
+  version: "1.13.2"
+  download_version: "1.13.0"
+
+build:
+  system_dependencies:
+    - "cmake"
+    - "ninja"
+  env: {}
+  patches:
+    - "0001-fix-version-metadata.patch"
+    - "0002-use-system-ninja.patch"
+

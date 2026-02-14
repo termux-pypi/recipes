@@ -1,0 +1,12 @@
+diff --git a/PKG-INFO b/PKG-INFO
+index b2ef543..d42bb3e 100644
+--- a/PKG-INFO
++++ b/PKG-INFO
+@@ -1,6 +1,6 @@
+ Metadata-Version: 2.1
+ Name: ninja
+-Version: 1.13.0
++Version: 1.13.2
+ Summary: Ninja is a small build system with a focus on speed
+ Keywords: build,c++,cross-compilation,cross-platform,fortran,ninja
+ Author-Email: Jean-Christophe Fillion-Robin <scikit-build@googlegroups.com>, Henry Schreiner <henryfs@princeton.edu>

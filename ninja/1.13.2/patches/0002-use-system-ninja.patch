@@ -1,0 +1,22 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3e6fe0a..bd9f32a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -23,7 +23,8 @@ message(STATUS "")
+ message(STATUS "  RUN_NINJA_TEST : ${RUN_NINJA_TEST}")
+ message(STATUS "************************************")
+ 
+-add_subdirectory(ninja-upstream)
++find_program(SYSTEM_NINJA_BIN NAMES ninja REQUIRED)
++message(STATUS "Found system ninja: ${SYSTEM_NINJA_BIN}")
+ 
+ if(RUN_NINJA_TEST)
+   add_custom_target(
+@@ -33,5 +34,5 @@ if(RUN_NINJA_TEST)
+   )
+ endif()
+ 
+-install(TARGETS ninja COMPONENT python DESTINATION "${SKBUILD_SCRIPTS_DIR}")
+-install(FILES "${ninja_SOURCE_DIR}/misc/ninja_syntax.py" COMPONENT python DESTINATION ninja)
++install(PROGRAMS "${SYSTEM_NINJA_BIN}" COMPONENT python DESTINATION "${SKBUILD_SCRIPTS_DIR}")
++install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/ninja-upstream/misc/ninja_syntax.py" COMPONENT python DESTINATION ninja)
