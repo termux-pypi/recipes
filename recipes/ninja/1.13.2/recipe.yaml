@@ -9,6 +9,6 @@ build:
     - "ninja"
   env: {}
   patches:
-    - "0001-fix-version-metadata.patch"
-    - "0002-use-system-ninja.patch"
+    - "patches/0001-fix-version-metadata.patch"
+    - "patches/0002-use-system-ninja.patch"
 
