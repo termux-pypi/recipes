@@ -1,0 +1,140 @@
+name: Termux Builder
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'recipes/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'recipes/**' ]
+
+jobs:
+  detect-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      any_changed: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Get changed version folders
+        id: changed-files
+        uses: tj-actions/changed-files@v47
+        with:
+          dir_names: true
+          dir_names_max_depth: 3 # recipes(1)/name(2)/version(3)
+          json: true
+          files: recipes/**
+
+      - name: Set Matrix Data
+        id: set-matrix
+        run: |
+          echo "matrix=${{ steps.changed-files.outputs.all_changed_files }}" >> $GITHUB_OUTPUT
+
+  build-version:
+    needs: detect-versions
+    if: ${{ needs.detect-versions.outputs.any_changed == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version_dir: ${{ fromJson(needs.detect-versions.outputs.matrix) }}
+        arch: [aarch64, arm, x86_64, i686]
+        include:
+          - arch: aarch64
+            platform: linux/arm64
+            image_tag: aarch64
+          - arch: arm
+            platform: linux/arm/v7
+            image_tag: arm
+          - arch: x86_64
+            platform: linux/amd64
+            image_tag: x86_64
+          - arch: i686
+            platform: linux/386
+            image_tag: i686
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Register QEMU
+        run: docker run --rm --privileged aptman/qus -s -- -p aarch64 arm i386
+
+      - name: Build
+        run: |
+          mkdir -p "dist/${{ matrix.arch }}"
+
+          docker run --rm --privileged \
+            --platform ${{ matrix.platform }} \
+            -v "${{ github.workspace }}:/data/data/com.termux/files/home/workspace" \
+            termux/termux-docker:${{ matrix.image_tag }} \
+            bash -c '
+              export TERM=xterm-256color
+              ln -s /data/data/com.termux/files/usr/etc/termux/mirrors/default /data/data/com.termux/files/usr/etc/termux/chosen_mirrors
+
+              pkg upgrade -y -o Dpkg::Options::="--force-confnew"
+              pkg install -y python python-pip build-essential clang cmake make binutils patchelf git autoconf automake rust
+
+              pip install termux-pip
+
+              tpip setup
+              pip install termux-pip[build]
+
+              cd $HOME/workspace
+
+              if [ -f "${{ matrix.version_dir }}/recipe.yaml" ]; then
+                echo "--- Building: ${{ matrix.version_dir }} ---"
+                tpip build "${{ matrix.version_dir }}/recipe.yaml" --output ./dist/${{ matrix.arch }}
+              else
+                echo "Skipping ${{ matrix.version_dir }}: no recipe.yaml found at this level."
+              fi
+            '
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.arch }}-${{ strategy.job-index }}
+          path: dist/${{ matrix.arch }}/*
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download aarch64
+        uses: actions/download-artifact@v7
+        with:
+          pattern: packages-aarch64-*
+          path: upload/aarch64
+          merge-multiple: true
+
+      - name: Download arm
+        uses: actions/download-artifact@v7
+        with:
+          pattern: packages-arm-*
+          path: upload/arm
+          merge-multiple: true
+
+      - name: Download x86_64
+        uses: actions/download-artifact@v7
+        with:
+          pattern: packages-x86_64-*
+          path: upload/x86_64
+          merge-multiple: true
+
+      - name: Download i686
+        uses: actions/download-artifact@v7
+        with:
+          pattern: packages-i686-*
+          path: upload/i686
+          merge-multiple: true
+
+      - name: Upload to Timeweb S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+        run: |
+          aws s3 sync upload/ s3://${{ secrets.S3_BUCKET_NAME }}/wheels/ \
+            --endpoint-url https://s3.timeweb.cloud \
+            --acl public-read
