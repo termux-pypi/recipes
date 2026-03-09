@@ -1,0 +1,11 @@
+metadata:
+  name: "maturin"
+  version: "1.12.6"
+  download_version: "1.12.6"
+
+build:
+  system_dependencies:
+    - "rust"
+  env: {}
+  patches:
+    - "patches/0001-force-android-api-level.patch"

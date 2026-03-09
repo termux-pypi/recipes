@@ -1,0 +1,13 @@
+diff --git a/src/build_context.rs b/src/build_context.rs
+index 8f7ee5a..581d2dd 100644
+--- a/src/build_context.rs
++++ b/src/build_context.rs
+@@ -1559,6 +1559,8 @@ fn find_android_api_level(target_triple: &str, manifest_path: &Path) -> Result<S
+         return Ok(val);
+     }
+ 
++    return Ok("24".to_string());
++
+     let mut clues = Vec::new();
+ 
+     // 1. Linker from cargo-config2
