@@ -64,6 +64,7 @@ jobs:
       - name: Build
         run: |
           mkdir -p "dist/${{ matrix.arch }}"
+          chmod -R 777 dist/
 
           docker run --rm --privileged \
             --platform ${{ matrix.platform }} \
