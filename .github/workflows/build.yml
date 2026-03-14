@@ -79,8 +79,8 @@ jobs:
               export TERM=xterm-256color
               ln -s /data/data/com.termux/files/usr/etc/termux/mirrors/default /data/data/com.termux/files/usr/etc/termux/chosen_mirrors
 
-              pkg upgrade -y -o Dpkg::Options::="--force-confnew"
-              pkg install -y python python-pip build-essential clang cmake make binutils patchelf git autoconf automake rust
+              pkg upgrade --quiet -y -o Dpkg::Options::="--force-confnew"
+              pkg install --quiet -y python python-pip build-essential clang cmake make binutils patchelf git autoconf automake rust
 
               pip install termux-pip
 
