@@ -34,7 +34,6 @@ jobs:
   build-version:
     needs: detect-versions
     if: ${{ needs.detect-versions.outputs.any_changed == 'true' }}
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -44,22 +43,24 @@ jobs:
           - arch: aarch64
             platform: linux/arm64
             image_tag: aarch64
+            runner: ubuntu-24.04-arm
           - arch: arm
             platform: linux/arm/v7
             image_tag: arm
+            runner: ubuntu-24.04-arm
           - arch: x86_64
             platform: linux/amd64
             image_tag: x86_64
+            runner: ubuntu-latest
           - arch: i686
             platform: linux/386
             image_tag: i686
+            runner: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: Register QEMU
-        run: docker run --rm --privileged aptman/qus -s -- -p aarch64 arm i386
 
       - name: Build
         run: |
