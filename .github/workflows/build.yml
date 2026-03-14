@@ -62,6 +62,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Register QEMU (arm)
+        if: matrix.arch == 'arm'
+        run: docker run --rm --privileged aptman/qus -s -- -p arm
+
       - name: Build
         run: |
           mkdir -p "dist/${{ matrix.arch }}"
