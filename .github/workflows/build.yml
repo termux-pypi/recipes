@@ -66,7 +66,7 @@ jobs:
         if: matrix.arch == 'arm'
         run: docker run --rm --privileged aptman/qus -s -- -p arm
 
-      - name: Build
+      - name: Build (${{ matrix.version_dir }})
         run: |
           mkdir -p "dist/${{ matrix.arch }}"
           chmod -R 777 dist/
@@ -101,46 +101,26 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.arch }}-${{ strategy.job-index }}
-          path: dist/${{ matrix.arch }}/*
+          path: dist/
 
-  deploy:
+  upload:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build-version
     runs-on: ubuntu-latest
     steps:
-      - name: Download aarch64
+      - name: Download wheels
         uses: actions/download-artifact@v7
         with:
-          pattern: packages-aarch64-*
-          path: upload/aarch64
+          pattern: packages-*
+          path: upload/
           merge-multiple: true
 
-      - name: Download arm
-        uses: actions/download-artifact@v7
-        with:
-          pattern: packages-arm-*
-          path: upload/arm
-          merge-multiple: true
-
-      - name: Download x86_64
-        uses: actions/download-artifact@v7
-        with:
-          pattern: packages-x86_64-*
-          path: upload/x86_64
-          merge-multiple: true
-
-      - name: Download i686
-        uses: actions/download-artifact@v7
-        with:
-          pattern: packages-i686-*
-          path: upload/i686
-          merge-multiple: true
-
-      - name: Upload to Timeweb S3
+      - name: Upload wheels
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
         run: |
-          aws s3 sync upload/ s3://${{ secrets.S3_BUCKET_NAME }}/wheels/ \
-            --endpoint-url https://s3.timeweb.cloud \
-            --acl public-read
+          aws s3 cp upload/ s3://${{ vars.S3_BUCKET_NAME }}/wheels/ \
+            --endpoint-url ${{ vars.S3_ENDPOINT_URL }} \
+            --acl public-read \
+            --recursive
