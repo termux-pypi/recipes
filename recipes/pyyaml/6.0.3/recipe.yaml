@@ -1,0 +1,10 @@
+metadata:
+  name: "pyyaml"
+  version: "6.0.3"
+  download_version: "6.0.3"
+
+build:
+  system_dependencies:
+    - "libyaml"
+  env: {}
+  patches: []
