@@ -91,7 +91,7 @@ jobs:
 
               if [ -f "${{ matrix.version_dir }}/recipe.yaml" ]; then
                 echo "--- Building: ${{ matrix.version_dir }} ---"
-                tpip build "${{ matrix.version_dir }}/recipe.yaml" --output ./dist/${{ matrix.arch }}
+                tpip build "${{ matrix.version_dir }}/recipe.yaml" --wheel-dir ./dist/${{ matrix.arch }}
               else
                 echo "Skipping ${{ matrix.version_dir }}: no recipe.yaml found at this level."
               fi
