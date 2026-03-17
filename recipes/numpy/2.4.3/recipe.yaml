@@ -1,0 +1,13 @@
+metadata:
+  name: "numpy"
+  version: "2.4.3"
+  download_version: "2.4.3"
+
+build:
+  system_dependencies:
+    - "libopenblas"
+    - "blas-openblas"
+    - "cmake"
+    - "ninja"
+  env: {}
+  patches: []
