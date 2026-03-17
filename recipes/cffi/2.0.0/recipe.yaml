@@ -1,0 +1,10 @@
+metadata:
+  name: "cffi"
+  version: "2.0.0"
+  download_version: "2.0.0"
+
+build:
+  system_dependencies:
+    - "libffi"
+  env: {}
+  patches: []
