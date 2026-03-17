@@ -1,0 +1,10 @@
+metadata:
+  name: "bcrypt"
+  version: "5.0.0"
+  download_version: "5.0.0"
+
+build:
+  system_dependencies:
+    - "rust"
+  env: {}
+  patches: []
