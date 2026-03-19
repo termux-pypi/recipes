@@ -62,11 +62,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Check architecture support
+        id: check_arch
+        run: |
+          RECIPE_PATH="${{ matrix.version_dir }}/recipe.yaml"
+          if [ -f "$RECIPE_PATH" ]; then
+            EXCLUDED_ARCHES=$(yq '.build.exclude_arches[]?' "$RECIPE_PATH" 2>/dev/null || true)
+
+            if echo "$EXCLUDED_ARCHES" | grep -qw "${{ matrix.arch }}"; then
+              echo "Architecture ${{ matrix.arch }} is excluded in recipe.yaml. Skipping."
+              echo "skip=true" >> $GITHUB_OUTPUT
+            else
+              echo "skip=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "No recipe.yaml found. Skipping"
+          fi
+
       - name: Register QEMU (arm)
-        if: matrix.arch == 'arm'
+        if: matrix.arch == 'arm' && steps.check_arch.outputs.skip != 'true'
         run: docker run --rm --privileged aptman/qus -s -- -p arm
 
       - name: Build (${{ matrix.version_dir }})
+        if: steps.check_arch.outputs.skip != 'true'
         run: |
           mkdir -p "dist/${{ matrix.arch }}"
           chmod -R 777 dist/
@@ -99,6 +118,7 @@ jobs:
             '
 
       - name: Upload Artifact
+        if: steps.check_arch.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.arch }}-${{ strategy.job-index }}
