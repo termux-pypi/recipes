@@ -1,0 +1,10 @@
+metadata:
+  name: "pandas"
+  version: "3.0.1"
+  download_version: "3.0.1"
+
+build:
+  system_dependencies:
+    - "ninja"
+  env: {}
+  patches: []
