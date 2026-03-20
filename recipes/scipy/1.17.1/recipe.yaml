@@ -1,0 +1,17 @@
+metadata:
+  name: "scipy"
+  version: "1.17.1"
+  download_version: "1.17.1"
+
+build:
+  system_dependencies:
+    - "libopenblas"
+    - "blas-openblas"
+    - "flang"
+    - "cmake"
+    - "ninja"
+  exclude_arches:  # flang
+    - "arm"
+    - "i686"
+  env: {}
+  patches: []
