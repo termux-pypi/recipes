@@ -1,0 +1,11 @@
+metadata:
+  name: "argon2_cffi_bindings"
+  version: "25.1.0"
+  download_version: "25.1.0"
+
+build:
+  system_dependencies:
+    - "argon2"
+  env:
+    ARGON2_CFFI_USE_SYSTEM: "1"
+  patches: []
