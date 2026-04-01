@@ -7,18 +7,26 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'recipes/**' ]
+  workflow_dispatch:
+    inputs:
+      recipe:
+        description: 'Recipe to build (* for all, or e.g., numpy/*)'
+        required: true
+        default: '*'
+        type: string
 
 jobs:
   detect-versions:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      any_changed: ${{ steps.changed-files.outputs.any_changed }}
+      any_changed: ${{ steps.set-matrix.outputs.any_changed }}
     steps:
       - uses: actions/checkout@v6
 
       - name: Get changed version folders
         id: changed-files
+        if: github.event_name != 'workflow_dispatch'
         uses: tj-actions/changed-files@v47
         with:
           dir_names: true
@@ -29,7 +37,22 @@ jobs:
       - name: Set Matrix Data
         id: set-matrix
         run: |
-          echo "matrix=${{ steps.changed-files.outputs.all_changed_files }}" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            PATTERN="${{ github.event.inputs.recipe }}"
+            DIRS=$(find recipes/$PATTERN -name "recipe.yaml" -printf '%h\n' 2>/dev/null | sort -u)
+
+            if [ -z "$DIRS" ]; then
+              echo "any_changed=false" >> $GITHUB_OUTPUT
+              echo "matrix=[]" >> $GITHUB_OUTPUT
+            else
+              JSON=$(echo "$DIRS" | jq -R . | jq -s -c .)
+              echo "any_changed=true" >> $GITHUB_OUTPUT
+              echo "matrix=$JSON" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "any_changed=${{ steps.changed-files.outputs.any_changed }}" >> $GITHUB_OUTPUT
+            echo "matrix=${{ steps.changed-files.outputs.all_changed_files }}" >> $GITHUB_OUTPUT
+          fi
 
   build-version:
     needs: detect-versions
@@ -125,7 +148,7 @@ jobs:
           path: dist/
 
   upload:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: build-version
     runs-on: ubuntu-latest
     steps:
