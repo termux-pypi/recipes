@@ -11,4 +11,5 @@ build:
   patches:
     - "patches/0001-fix-version-metadata.patch"
     - "patches/0002-use-system-ninja.patch"
+    - "patches/0003-fix-ninja-bin.patch"
 

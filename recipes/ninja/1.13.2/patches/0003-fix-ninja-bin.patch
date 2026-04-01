@@ -1,0 +1,38 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bd9f32a..ec83133 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -34,5 +34,5 @@ if(RUN_NINJA_TEST)
+   )
+ endif()
+ 
+-install(PROGRAMS "${SYSTEM_NINJA_BIN}" COMPONENT python DESTINATION "${SKBUILD_SCRIPTS_DIR}")
++install(PROGRAMS "${SYSTEM_NINJA_BIN}" COMPONENT python DESTINATION ninja/bin)
+ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/ninja-upstream/misc/ninja_syntax.py" COMPONENT python DESTINATION ninja)
+diff --git a/pyproject.toml b/pyproject.toml
+index ca3bb55..4e55468 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -42,6 +42,9 @@ Homepage = "http://ninja-build.org/"
+ "Mailing list" = "https://groups.google.com/forum/#!forum/scikit-build"
+ "Source Code" = "https://github.com/scikit-build/ninja-python-distributions"
+ 
++[project.scripts]
++ninja = "ninja:ninja"
++
+ [dependency-groups]
+ test = [
+     "importlib_metadata>=2.0",
+diff --git a/src/ninja/__init__.py b/src/ninja/__init__.py
+index 252a4b8..20a70e1 100644
+--- a/src/ninja/__init__.py
++++ b/src/ninja/__init__.py
+@@ -21,7 +21,7 @@ def _get_ninja_dir() -> str:
+     ninja_exe = "ninja" + sysconfig.get_config_var("EXE")
+ 
+     # Default path
+-    path = os.path.join(sysconfig.get_path("scripts"), ninja_exe)
++    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bin", ninja_exe)
+     if os.path.isfile(path):
+         return os.path.dirname(path)
+ 
