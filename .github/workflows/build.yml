@@ -1,4 +1,8 @@
 name: Termux Builder
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch'
+      && format('feat({0}): manual run', inputs.recipe)
+      || github.event.head_commit.message }}
 
 on:
   push:
