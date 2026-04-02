@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b9108d0..0ac2210 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -336,10 +336,6 @@ if(CMakePythonDistributions_SUPERBUILD)
+     # CMakeProject_BINARY_DISTRIBUTION_DIR
+     #
+ 
+-    if(${binary_archive}_sha256 STREQUAL "NA")
+-      message(FATAL_ERROR "Pre-built archives not available for '${binary_archive}'. Consider setting BUILD_CMAKE_FROM_SOURCE to ON.")
+-    endif()
+-
+     set(CMakeProject_BINARY_DISTRIBUTION_DIR "${CMAKE_BINARY_DIR}/CMakeProject-binary-distribution")
+ 
+     set(APT_CACHE_DIR "/data/data/com.termux/cache/apt/archives")

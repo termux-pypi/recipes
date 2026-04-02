@@ -11,4 +11,5 @@ build:
   env: {}
   patches:
     - "patches/0001-use-system-cmake.patch"
+    - "patches/0002-dont-check-sha256.patch"
 
