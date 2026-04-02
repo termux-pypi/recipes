@@ -1,0 +1,14 @@
+metadata:
+  name: "cmake"
+  version: "4.3.1"
+  download_version: "4.3.1"
+
+build:
+  system_dependencies:
+    - "cmake"
+    - "cmake-curses-gui"
+    - "ninja"
+  env: {}
+  patches:
+    - "patches/0001-use-system-cmake.patch"
+

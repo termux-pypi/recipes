@@ -1,0 +1,53 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d041301..b9108d0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,7 +26,7 @@ if(CMakePythonDistributions_SUPERBUILD)
+   #-----------------------------------------------------------------------------
+   # Options
+   set(default ON)
+-  if(WIN32 OR APPLE)
++  if(WIN32 OR APPLE OR ANDROID)
+     set(default OFF)
+   endif()
+   option(BUILD_CMAKE_FROM_SOURCE "Build CMake from source" ${default})
+@@ -342,22 +342,24 @@ if(CMakePythonDistributions_SUPERBUILD)
+ 
+     set(CMakeProject_BINARY_DISTRIBUTION_DIR "${CMAKE_BINARY_DIR}/CMakeProject-binary-distribution")
+ 
++    set(APT_CACHE_DIR "/data/data/com.termux/cache/apt/archives")
++    file(GLOB DEB_CMAKE_LIST "${APT_CACHE_DIR}/cmake_4.3.1_*.deb")
++    file(GLOB DEB_CCMAKE_LIST "${APT_CACHE_DIR}/cmake-curses-gui_4.3.1_*.deb")
++    list(GET DEB_CMAKE_LIST 0 DEB_CMAKE)
++    list(GET DEB_CCMAKE_LIST 0 DEB_CCMAKE)
++
+     # Download selected binary archive
+     ExternalProject_add(CMakeProject-binary-download
+       SOURCE_DIR ${CMakeProject_BINARY_DISTRIBUTION_DIR}
+-      URL ${${binary_archive}_url}
+-      URL_HASH SHA256=${${binary_archive}_sha256}
+-      DOWNLOAD_DIR ${CMakePythonDistributions_ARCHIVE_DOWNLOAD_DIR}
+-      USES_TERMINAL_DOWNLOAD 1
+       CONFIGURE_COMMAND ""
+-      BUILD_COMMAND ""
++      DOWNLOAD_COMMAND ""
++      BUILD_COMMAND sh -c "ar x ${DEB_CMAKE} && tar -xf data.tar.xz && ar x ${DEB_CCMAKE} && tar -xf data.tar.xz"
+       BUILD_IN_SOURCE 1
+       INSTALL_COMMAND ""
+       ${ep_download_extract_timestamp_arg}
+       ${ep_download_no_progress_args}
+       )
+     message(STATUS "SuperBuild - CMakeProject-binary-download")
+-    message(STATUS "SuperBuild - CMakeProject-binary-download - URL: ${${binary_archive}_url}")
+ 
+     list(APPEND ${PROJECT_NAME}_DEPENDS CMakeProject-binary-download)
+     list(APPEND ${PROJECT_NAME}_CMAKE_CACHE_ARG
+@@ -410,7 +412,7 @@ include\(\"${CMakeProject_BINARY_DIR}/cmake_install.cmake\")
+     if(APPLE)
+       set(distribution_root "${CMakeProject_BINARY_DISTRIBUTION_DIR}/CMake.app/Contents")
+     else()
+-      set(distribution_root "${CMakeProject_BINARY_DISTRIBUTION_DIR}")
++      set(distribution_root "${CMakeProject_BINARY_DISTRIBUTION_DIR}/data/data/com.termux/files/usr")
+     endif()
+ 
+     # Install all files from binary distribution
