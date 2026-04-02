@@ -1,0 +1,12 @@
+metadata:
+  name: "blosc"
+  version: "1.11.4"
+  download_version: "1.11.4"
+
+build:
+  system_dependencies:
+    - "libblosc"
+  env:
+    USE_SYSTEM_BLOSC: "1"
+    CMAKE_PREFIX_PATH: "/data/data/com.termux/files/usr"
+  patches: []
