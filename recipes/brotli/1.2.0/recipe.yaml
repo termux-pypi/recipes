@@ -1,0 +1,9 @@
+metadata:
+  name: "brotli"
+  version: "1.2.0"
+  download_version: "1.2.0"
+
+build:
+  system_dependencies: []
+  env: {}
+  patches: []
