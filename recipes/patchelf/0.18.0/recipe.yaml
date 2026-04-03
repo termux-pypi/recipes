@@ -1,0 +1,15 @@
+metadata:
+  name: "patchelf"
+  version: "0.18.0"
+  download_version: "0.17.2.4"
+
+build:
+  system_dependencies:
+    - "patchelf"
+    - "cmake"
+    - "ninja"
+  env: {}
+  patches:
+    - "patches/0001-fix-version-metadata.patch"
+    - "patches/0002-use-system-patchelf.patch"
+

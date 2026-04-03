@@ -1,0 +1,12 @@
+diff --git a/PKG-INFO b/PKG-INFO
+index c86524e..330481c 100644
+--- a/PKG-INFO
++++ b/PKG-INFO
+@@ -1,6 +1,6 @@
+ Metadata-Version: 2.1
+ Name: patchelf
+-Version: 0.17.2.4
++Version: 0.18.0
+ Summary: A small utility to modify the dynamic linker and RPATH of ELF executables.
+ Keywords: auditwheel,elf,manylinux,musllinux,patchelf
+ Author-Email: Matthieu Darbois <mayeut@users.noreply.github.com>
