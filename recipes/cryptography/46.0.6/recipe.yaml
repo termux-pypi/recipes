@@ -1,0 +1,10 @@
+metadata:
+  name: "cryptography"
+  version: "46.0.6"
+  download_version: "46.0.6"
+
+build:
+  system_dependencies:
+    - "rust"
+  env: {}
+  patches: []
