@@ -1,0 +1,9 @@
+metadata:
+  name: "numexpr"
+  version: "2.14.1"
+  download_version: "2.14.1"
+
+build:
+  system_dependencies: []
+  env: {}
+  patches: []
