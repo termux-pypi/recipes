@@ -10,5 +10,5 @@ build:
     - "ninja"
   env:
     USE_SYSTEM_BLOSC2: "1"
-    CFLAGS: "-Wno-implicit-function-declaration"
+    CFLAGS: "-Wno-implicit-function-declaration -Wno-invalid-gnu-asm-cast"
   patches: []
