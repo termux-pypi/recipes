@@ -1,0 +1,14 @@
+metadata:
+  name: "blosc2"
+  version: "4.1.2"
+  download_version: "4.1.2"
+
+build:
+  system_dependencies:
+    - "libblosc2"
+    - "cmake"
+    - "ninja"
+  env:
+    USE_SYSTEM_BLOSC2: "1"
+    CFLAGS: "-Wno-implicit-function-declaration"
+  patches: []
