@@ -1,0 +1,13 @@
+metadata:
+  name: "apsw"
+  version: "3.53.0.0"
+  download_version: "3.53.0.0"
+
+build:
+  system_dependencies:
+    - "libsqlite"
+  env: {}
+  patches:
+    - "patches/0001-use-system-sqlite.patch"
+    - "patches/0002-fix-find-library-for-termux.patch"
+

@@ -1,0 +1,17 @@
+diff --git a/setup.py b/setup.py
+index 3f8447c..d160fa6 100644
+--- a/setup.py
++++ b/setup.py
+@@ -730,7 +730,11 @@ def set_config_from_system(outputfilename: str):
+ 
+     libpath = ctypes.util.find_library("sqlite3")
+     if not libpath:
+-        sys.exit("Could not find system sqlite3 library using ctypes.util.find_library")
++        termux_lib = os.path.join(os.environ.get("PREFIX", "/usr"), "lib", "libsqlite3.so")
++        if os.path.exists(termux_lib):
++            libpath = termux_lib
++        else:
++            sys.exit("Could not find system sqlite3 library using ctypes.util.find_library")
+     print("Extracting configuration from", libpath)
+ 
+     lib = ctypes.cdll.LoadLibrary(libpath)
