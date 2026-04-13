@@ -1,0 +1,13 @@
+metadata:
+  name: "matplotlib"
+  version: "3.10.8"
+  download_version: "3.10.8"
+
+build:
+  system_dependencies:
+    - "freetype"
+    - "qhull"
+    - "ninja"
+  env: {}
+  patches:
+    - "patches/0001-use-system-dependencies.patch"
