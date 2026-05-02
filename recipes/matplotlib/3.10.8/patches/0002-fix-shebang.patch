@@ -1,0 +1,10 @@
+diff --git a/tools/generate_matplotlibrc.py b/tools/generate_matplotlibrc.py
+index a5619a0..52c02f5 100755
+--- a/tools/generate_matplotlibrc.py
++++ b/tools/generate_matplotlibrc.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python3
++#!/data/data/com.termux/files/usr/bin/env python3
+ """
+ Generate matplotlirc for installs.
+ 

@@ -11,3 +11,4 @@ build:
   env: {}
   patches:
     - "patches/0001-use-system-dependencies.patch"
+    - "patches/0002-fix-shebang.patch"
