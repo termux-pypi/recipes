@@ -8,7 +8,8 @@ build:
     - "freetype"
     - "qhull"
     - "ninja"
-  env: {}
+  env:
+    CXXFLAGS: "-Wno-c++11-narrowing"
   patches:
     - "patches/0001-use-system-dependencies.patch"
     - "patches/0002-fix-shebang.patch"
