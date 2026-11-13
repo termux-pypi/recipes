@@ -40,9 +40,19 @@ jobs:
 
       - name: Set Matrix Data
         id: set-matrix
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RECIPE_INPUT: ${{ github.event.inputs.recipe }}
+          CHANGED_ANY: ${{ steps.changed-files.outputs.any_changed }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            PATTERN="${{ github.event.inputs.recipe }}"
+          if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            PATTERN="$RECIPE_INPUT"
+            # Only allow simple glob patterns; no path traversal
+            if ! [[ "$PATTERN" =~ ^[A-Za-z0-9._*/-]+$ ]] || [[ "$PATTERN" == *..* ]]; then
+              echo "Invalid recipe pattern: $PATTERN"
+              exit 1
+            fi
             DIRS=$(find recipes/$PATTERN -name "recipe.yaml" -printf '%h\n' 2>/dev/null | sort -u)
 
             if [ -z "$DIRS" ]; then
@@ -54,8 +64,8 @@ jobs:
               echo "matrix=$JSON" >> $GITHUB_OUTPUT
             fi
           else
-            echo "any_changed=${{ steps.changed-files.outputs.any_changed }}" >> $GITHUB_OUTPUT
-            echo "matrix=${{ steps.changed-files.outputs.all_changed_files }}" >> $GITHUB_OUTPUT
+            echo "any_changed=$CHANGED_ANY" >> $GITHUB_OUTPUT
+            echo "matrix=$CHANGED_FILES" >> $GITHUB_OUTPUT
           fi
 
   build-version:
