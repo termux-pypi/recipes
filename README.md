@@ -1,6 +1,6 @@
 # termux-pypi recipes
 
-Build recipes for the [Termux-PyPI](https://github.com/termux-pypi/termux-pip) index: patches, flags and system dependencies needed to turn PyPI source distributions into self-contained wheels that install on Termux without compiling.
+Build recipes for the [Termux-PyPI](tpypi.loamfy-tools.workers.dev) index: patches, flags and system dependencies needed to turn PyPI source distributions into self-contained wheels that install on Termux without compiling.
 
 Recipes are consumed by [`tpip build`](https://github.com/termux-pypi/termux-pip). CI builds every recipe for all supported architectures and publishes the repaired wheels.
 
