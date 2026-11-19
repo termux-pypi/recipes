@@ -1,0 +1,13 @@
+diff --git a/src/target/platform_tag.rs b/src/target/platform_tag.rs
+index f367fdc..8a71256 100644
+--- a/src/target/platform_tag.rs
++++ b/src/target/platform_tag.rs
+@@ -505,6 +505,8 @@ fn find_android_api_level(target_triple: &str, manifest_path: &Path) -> Result<S
+         return Ok(api_level);
+     }
+ 
++    return Ok("24".to_string());
++
+     bail!(
+         "Failed to determine Android API level. Please set the ANDROID_API_LEVEL environment variable."
+     );
