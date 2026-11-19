@@ -7,5 +7,5 @@ build:
   system_dependencies:
     - "rust"
   env: {}
-  patches: []
-
+  patches:
+    - "patches/0001-force-android-api-level.patch"
