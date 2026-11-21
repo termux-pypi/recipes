@@ -175,44 +175,54 @@ while ($i -lt $args.Count) {
         '^(-e|--edit)$' {
             $Edit = $true
             $i++
+            break
         }
         '^--editor$' {
             if ($i + 1 -ge $args.Count) { Log-Err "Option $arg requires an editor command."; exit 2 }
             $EditorCmd = [string]$args[$i + 1]
             $i += 2
+            break
         }
         '^--editor=(.+)$' {
             $EditorCmd = $Matches[1]
             $i++
+            break
         }
         '^(-f|--force)$' {
             $Force = $true
             $i++
+            break
         }
         '^--new$' {
             $CreateNew = $true
             $i++
+            break
         }
         '^--git-commit-and-push$' {
             $GitCommitAndPush = $true
             $i++
+            break
         }
         '^--dry-run$' {
             $DryRun = $true
             $i++
+            break
         }
         '^(-s|--from)$' {
             if ($i + 1 -ge $args.Count) { Log-Err "Option $arg requires a version argument."; exit 2 }
             $FromVersion = [string]$args[$i + 1]
             $i += 2
+            break
         }
         '^--from=(.+)$' {
             $FromVersion = $Matches[1]
             $i++
+            break
         }
         '^--$' {
             $i++
             while ($i -lt $args.Count) { $Positional.Add([string]$args[$i]); $i++ }
+            break
         }
         '^-.' {
             Log-Err "Unknown option: $arg"
@@ -222,6 +232,7 @@ while ($i -lt $args.Count) {
         default {
             $Positional.Add($arg)
             $i++
+            break
         }
     }
 }
