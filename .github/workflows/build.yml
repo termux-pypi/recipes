@@ -69,20 +69,20 @@ jobs:
         include:
           - arch: aarch64
             platform: linux/arm64
-            image_tag: aarch64
-            runner: ubuntu-24.04-arm
+            image_tag: 3.14-arm64
+            runner: ubuntu-26.04-arm
           - arch: arm
             platform: linux/arm/v7
-            image_tag: arm
-            runner: ubuntu-24.04-arm
+            image_tag: 3.14-armeabi
+            runner: ubuntu-26.04-arm
           - arch: x86_64
             platform: linux/amd64
-            image_tag: x86_64
-            runner: ubuntu-latest
+            image_tag: 3.14-x86_64
+            runner: ubuntu-26.04
           - arch: i686
             platform: linux/386
-            image_tag: i686
-            runner: ubuntu-latest
+            image_tag: 3.14-x86
+            runner: ubuntu-26.04
     runs-on: ${{ matrix.runner }}
 
     steps:
@@ -120,25 +120,19 @@ jobs:
           docker run --rm --privileged \
             --platform ${{ matrix.platform }} \
             -v "${{ github.workspace }}:/data/data/com.termux/files/home/workspace" \
-            termux/termux-docker:${{ matrix.image_tag }} \
-            bash -c '
+            ghcr.io/termux-pypi/python-builder:${{ matrix.image_tag }} \
+            bash -lc '
               export TERM=xterm-256color
-              ln -s /data/data/com.termux/files/usr/etc/termux/mirrors/default /data/data/com.termux/files/usr/etc/termux/chosen_mirrors
+              pip install -q --no-cache-dir -U "termux-pip[build]"
 
-              pkg upgrade --quiet -y -o Dpkg::Options::="--force-confnew"
-              pkg install --quiet -y python python-pip build-essential clang cmake make binutils patchelf git autoconf automake rust
-
-              pip install termux-pip
-
-              tpip setup
-              pip install termux-pip[build]
-
-              cd $HOME/workspace
+              cd "$HOME/workspace"
 
               if [ -f "${{ matrix.version_dir }}/recipe.yaml" ]; then
                 echo "--- Building: ${{ matrix.version_dir }} ---"
-                tpip build "${{ matrix.version_dir }}/recipe.yaml" --wheel-dir ./dist/${{ matrix.arch }}
-                tpip repair ./dist/*/*
+                tpip build "${{ matrix.version_dir }}/recipe.yaml" --wheel-dir "./dist/${{ matrix.arch }}"
+                for whl in ./dist/${{ matrix.arch }}/*.whl; do
+                  [ -f "$whl" ] && tpip repair "$whl"
+                done
               else
                 echo "Skipping ${{ matrix.version_dir }}: no recipe.yaml found at this level."
               fi
