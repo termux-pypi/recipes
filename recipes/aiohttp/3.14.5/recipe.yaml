@@ -1,0 +1,9 @@
+metadata:
+  name: "aiohttp"
+  version: "3.14.5"
+  download_version: "3.14.5"
+
+build:
+  system_dependencies: []
+  env: {}
+  patches: []
