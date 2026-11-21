@@ -1,0 +1,9 @@
+metadata:
+  name: "asv"
+  version: "0.6.6"
+  download_version: "0.6.6"
+
+build:
+  system_dependencies: []
+  env: {}
+  patches: []
