@@ -1,0 +1,9 @@
+metadata:
+  name: "biopython"
+  version: "1.87"
+  download_version: "1.87"
+
+build:
+  system_dependencies: []
+  env: {}
+  patches: []
