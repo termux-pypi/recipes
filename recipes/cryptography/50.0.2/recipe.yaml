@@ -1,0 +1,10 @@
+metadata:
+  name: "cryptography"
+  version: "50.0.2"
+  download_version: "50.0.2"
+
+build:
+  system_dependencies:
+    - "rust"
+  env: {}
+  patches: []
